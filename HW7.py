@@ -136,7 +136,14 @@ def birthyear_nationality_search(age, country, cur, conn):
     # HINT: You'll have to use JOIN for this task.
 
 def position_birth_search(position, age, cur, conn):
-       pass
+    playersList = []
+    info = cur.execute("SELECT Players.name, Positions.position, Players.birthyear FROM Players JOIN Positions on Players.position_id = Positions.id")
+    cs = info.fetchall()
+    after = 2023 - age
+    for x in cs:
+        if x[1] == position and x[2] > after:
+            playersList.append((x))
+    return playersList
 
 
 # [EXTRA CREDIT]
@@ -223,17 +230,17 @@ class TestAllMethods(unittest.TestCase):
         self.assertEqual(a[3][2], 1992)
         self.assertEqual(len(a[1]), 3)
 
-    # def test_type_speed_defense_search(self):
-    #     b = sorted(position_birth_search('Goalkeeper', 35, self.cur, self.conn))
-    #     self.assertEqual(len(b), 2)
-    #     self.assertEqual(type(b[0][0]), str)
-    #     self.assertEqual(type(b[1][1]), str)
-    #     self.assertEqual(len(b[1]), 3) 
-    #     self.assertEqual(b[1], ('Jack Butland', 'Goalkeeper', 1993)) 
+    def test_type_speed_defense_search(self):
+        b = sorted(position_birth_search('Goalkeeper', 35, self.cur, self.conn))
+        self.assertEqual(len(b), 2)
+        self.assertEqual(type(b[0][0]), str)
+        self.assertEqual(type(b[1][1]), str)
+        self.assertEqual(len(b[1]), 3) 
+        self.assertEqual(b[1], ('Jack Butland', 'Goalkeeper', 1993)) 
 
-    #     c = sorted(position_birth_search("Defence", 23, self.cur, self.conn))
-    #     self.assertEqual(len(c), 1)
-    #     self.assertEqual(c, [('Teden Mengi', 'Defence', 2002)])
+        c = sorted(position_birth_search("Defence", 23, self.cur, self.conn))
+        self.assertEqual(len(c), 1)
+        self.assertEqual(c, [('Teden Mengi', 'Defence', 2002)])
     
     # # test extra credit
     # def test_make_winners_table(self):
